@@ -9,10 +9,10 @@ require('dotenv').config()
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "http://localhost:8050/auth/google/callback",
+  callbackURL: process.env.OAUTH_CALLBACK_URL,
   scope: ['email', 'profile']
-  
 },
+
   async function (request, accessToken, refreshToken, profile, done) {
     const password = 'aaa'
     const email = profile._json.email
