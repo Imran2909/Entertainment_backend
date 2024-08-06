@@ -142,7 +142,6 @@ app.put("/addMovieBookmark", async (req, res) => {
             if (!updatedUser) {
                 return res.status(404).send('User not found');
             }
-            // console.log(updatedUser.bookmark[0].movie);
             res.send('Bookmark updated successfully');
         } catch (error) {
             console.error('Error updating bookmark', error);
