@@ -5,6 +5,66 @@ const bcrypt = require("bcrypt")
 const fs = require("fs")
 const userRouter = express.Router()
 
+/**
+ * @swagger
+ * /user/signup:
+ *   post:
+ *     summary: Creates a new account for the app
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user's email
+ *               password:
+ *                 type: string
+ *                 description: The user's password
+ *               resetPassword:
+ *                 type: string
+ *                 description: The password confirmation
+ *     responses:
+ *       200:
+ *         description: User Registered successfully
+ *       400:
+ *         description: Password does not match
+ *       500:
+ *         description: Error registering user
+ */
+
+/**
+ * @swagger
+ * /user/login:
+ *   post:
+ *     summary: Logs in a user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: The user's email
+ *               password:
+ *                 type: string
+ *                 description: The user's password
+ *     responses:
+ *       200:
+ *         description: Successful login with a JWT token
+ *       401:
+ *         description: Invalid password
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+
+
 userRouter.post("/signup", (req, res) => {
     const { email, password, resetPassword } = req.body
     try {
@@ -26,38 +86,7 @@ userRouter.post("/signup", (req, res) => {
         res.send({ "msg": error.message })
     }
 })
-
-// userRouter.post("/login", async (req, res) => {
-//     const { email, password } = req.body
-//     try {
-//         const user = await userModel.find({ email })
-//         if (user.length > 0) {
-//             console.log('login');
-//             bcrypt.compare(password, user[0].password, (err, result) => {
-//                 if (result) {
-//                     let val = user[0]._id.toString()
-//                     fs.writeFile('userData.txt',val , (err) => {
-//                         if (err) {
-//                             console.error('Error writing to file', err);
-//                         }
-//                     });
-//                     var token = jwt.sign({ data: user[0].email }, "imran");
-//                     res.send({"token": token })
-//                 }
-//                 else {
-//                     res.send({ "msg": err.message })
-//                 }
-//             });
-//         }
-//         else {
-//             console.log('user not found');
-//             res.send({ "msg": "err.message" })
-//         }
-//     } catch (error) {
-//         res.send({ "msg": error.message })
-//     }
-// })
-
+ 
 
 userRouter.post("/login", async (req, res) => {
     const { email, password } = req.body;

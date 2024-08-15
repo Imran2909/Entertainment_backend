@@ -9,6 +9,8 @@ const session = require('express-session');
 const passport = require('passport');
 require('./config/google-oauth');
 require('dotenv').config()
+const swaggerUI = require("swagger-ui-express")
+const swaggerJsDoc = require("swagger-jsdoc")
 
 const app = express()
 app.use(express.json())
@@ -26,13 +28,209 @@ app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
+const options = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "Entertainment App API documentation",
+            version: "1.0.0"
+        },
+        servers: [
+            {
+                url: "http://localhost:8050"
+            }
+        ]
+    },
+    apis: ["./index.js", "./routes/user.route.js"]
+};
+
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: Home page route
+ *     responses:
+ *       200:
+ *         description: Returns the home page
+ */
+
+/**
+ * @swagger
+ * /fail:
+ *   get:
+ *     summary: Google OAuth failure route
+ *     responses:
+ *       200:
+ *         description: Returns a failure message for Google OAuth
+ */
+
+/**
+ * @swagger
+ * /auth/google:
+ *   get:
+ *     summary: Initiates Google OAuth authentication
+ *     responses:
+ *       302:
+ *         description: Redirects to Google OAuth login page
+ */
+
+/**
+ * @swagger
+ * /auth/google/callback:
+ *   get:
+ *     summary: Google OAuth callback route
+ *     responses:
+ *       302:
+ *         description: Redirects to the success or failure page based on authentication result
+ */
+
+/**
+ * @swagger
+ * /addTvSeriesBookmark:
+ *   put:
+ *     summary: Adds a TV series to the user's bookmark
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               movieId:
+ *                 type: string
+ *                 description: The ID of the TV series to add
+ *     responses:
+ *       200:
+ *         description: Bookmark updated successfully
+ *       400:
+ *         description: Movie ID is required
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Error updating bookmark
+ */
+
+/**
+ * @swagger
+ * /removeTvSeriesBookmark:
+ *   put:
+ *     summary: Removes a TV series from the user's bookmark
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               movieId:
+ *                 type: string
+ *                 description: The ID of the TV series to remove
+ *     responses:
+ *       200:
+ *         description: Bookmark removed successfully
+ *       400:
+ *         description: Movie ID is required
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Error updating bookmark
+ */
+
+/**
+ * @swagger
+ * /addMovieBookmark:
+ *   put:
+ *     summary: Adds a movie to the user's bookmark
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               movieId:
+ *                 type: string
+ *                 description: The ID of the movie to add
+ *     responses:
+ *       200:
+ *         description: Bookmark updated successfully
+ *       400:
+ *         description: Movie ID is required
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Error updating bookmark
+ */
+
+/**
+ * @swagger
+ * /removeMovieBookmark:
+ *   put:
+ *     summary: Removes a movie from the user's bookmark
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               movieId:
+ *                 type: string
+ *                 description: The ID of the movie to remove
+ *     responses:
+ *       200:
+ *         description: Bookmark removed successfully
+ *       400:
+ *         description: Movie ID is required
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Error updating bookmark
+ */
+
+/**
+ * @swagger
+ * /getMovieBookmark:
+ *   get:
+ *     summary: Retrieves the user's bookmarked movies
+ *     responses:
+ *       200:
+ *         description: A list of bookmarked movies
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Error retrieving bookmarks
+ */
+
+/**
+ * @swagger
+ * /getTvSeriesBookmark:
+ *   get:
+ *     summary: Retrieves the user's bookmarked TV series
+ *     responses:
+ *       200:
+ *         description: A list of bookmarked TV series
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Error retrieving bookmarks
+ */
+
+
+
+const swaggerSpec = swaggerJsDoc(options)
+app.use("/docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec) )
+
+
 app.get("/", (req, res) => {
     res.send("Home page")
 })
 
 app.get("/fail", (req, res) => {
-    res.send("fail page")
+    res.send("fail for Google OAuth")
 })
+
+
 
 app.use("/user", userRouter)
 
